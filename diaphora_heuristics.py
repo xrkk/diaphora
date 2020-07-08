@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 #!/usr/bin/python
 
 """
@@ -22,7 +23,7 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 # Use only for heuristics generating 1.0 ratios, results without false positives
 HEUR_TYPE_NO_FPS = 0
 
-# Use it for most heuristics; it will assign 1.0 ratios to the best chooser, 
+# Use it for most heuristics; it will assign 1.0 ratios to the best chooser,
 # values between 0.5 and <1.0 to the specific partial chooser and <0.5 results
 # to the unreliable chooser, if specified.
 HEUR_TYPE_RATIO = 1
@@ -51,12 +52,14 @@ HEURISTICS.append({
                    cast(f.md_index as real) md1, cast(df.md_index as real) md2
               from functions f,
                    diff.functions df
-             where (df.rva = f.rva
-                 or df.segment_rva = f.segment_rva)
+             where (df.rva = f.rva or df.segment_rva = f.segment_rva)
                and df.bytes_hash = f.bytes_hash
                and df.instructions = f.instructions
-               and ((f.name = df.name and substr(f.name, 1, 4) != 'sub_')
-                 or (substr(f.name, 1, 4) = 'sub_' or substr(df.name, 1, 4)))""",
+               and (
+                 (f.name = df.name and substr(f.name, 1, 4) != 'sub_')
+                 or
+                 (substr(f.name, 1, 4) = 'sub_' or substr(df.name, 1, 4))
+                 )""",
   "flags":HEUR_FLAG_NONE
 })
 
@@ -78,8 +81,8 @@ HEURISTICS.append({
                and df.instructions = f.instructions
                and ((f.name = df.name and substr(f.name, 1, 4) != 'sub_')
                  or (substr(f.name, 1, 4) = 'sub_' or substr(df.name, 1, 4)))
-               and ((f.nodes > 1 and df.nodes > 1
-                 and f.instructions > 5 and df.instructions > 5)
+               and (
+                 (f.nodes > 1 and df.nodes > 1 and f.instructions > 5 and df.instructions > 5)
                   or f.instructions > 10 and df.instructions > 10)""",
   "flags":HEUR_FLAG_NONE
 })
@@ -97,9 +100,8 @@ HEURISTICS.append({
                    cast(f.md_index as real) md1, cast(df.md_index as real) md2
               from functions f,
                    diff.functions df
-             where f.function_hash = df.function_hash 
-               and ((f.nodes > 1 and df.nodes > 1
-                 and f.instructions > 5 and df.instructions > 5)
+             where f.function_hash = df.function_hash
+               and ((f.nodes > 1 and df.nodes > 1 and f.instructions > 5 and df.instructions > 5)
                   or f.instructions > 10 and df.instructions > 10)""",
   "flags":HEUR_FLAG_NONE
 })
@@ -318,7 +320,7 @@ HEURISTICS.append({
               where kgh_hash != 0
               group by kgh_hash
              having count(*) <= 2
-              union 
+              union
              select kgh_hash
                from main.functions
               where kgh_hash != 0
@@ -349,7 +351,7 @@ HEURISTICS.append({
               where md_index != 0
               group by md_index
              having count(*) <= 2
-              union 
+              union
              select md_index
                from main.functions
               where md_index != 0
@@ -422,8 +424,7 @@ HEURISTICS.append({
        where f.md_index = df.md_index
          and f.md_index > 0
          and f.nodes > 3 and df.nodes > 3
-         and ((f.constants = df.constants
-         and f.constants_count > 0)) %POSTFIX%""",
+         and ((f.constants = df.constants and f.constants_count > 0)) %POSTFIX%""",
   "flags":HEUR_FLAG_NONE
 })
 
@@ -440,7 +441,7 @@ HEURISTICS.append({
             cast(f.md_index as real) md1, cast(df.md_index as real) md2
        from functions f,
             diff.functions df
-      where f.nodes = df.nodes 
+      where f.nodes = df.nodes
         and f.edges = df.edges
         and f.indegree = df.indegree
         and f.outdegree = df.outdegree
@@ -460,7 +461,7 @@ HEURISTICS.append({
         and f.loops = df.loops
         and f.tarjan_topological_sort = df.tarjan_topological_sort
         and f.strongly_connected_spp = df.strongly_connected_spp %POSTFIX%
-      union 
+      union
      select f.address ea, f.name name1, df.address ea2, df.name name2,
             'Most attributes' description,
             f.pseudocode pseudo1, df.pseudocode pseudo2,
@@ -470,7 +471,7 @@ HEURISTICS.append({
             cast(f.md_index as real) md1, cast(df.md_index as real) md2
        from functions f,
             diff.functions df
-       where f.nodes = df.nodes 
+       where f.nodes = df.nodes
          and f.edges = df.edges
          and f.indegree = df.indegree
          and f.outdegree = df.outdegree
@@ -485,7 +486,7 @@ HEURISTICS.append({
          and f.strongly_connected = df.strongly_connected
          and f.loops = df.loops
          and f.tarjan_topological_sort = df.tarjan_topological_sort
-         and f.strongly_connected_spp = df.strongly_connected_spp 
+         and f.strongly_connected_spp = df.strongly_connected_spp
          %POSTFIX%""",
   "flags":HEUR_FLAG_NONE
 })
@@ -707,7 +708,7 @@ HEURISTICS.append({
         and f.names = df.names
         and df.names != '{}'
         and df.pseudocode_lines > 5
-        and df.pseudocode is not null 
+        and df.pseudocode is not null
         and f.pseudocode is not null
         %POSTFIX%""",
   "flags":HEUR_FLAG_UNRELIABLE
@@ -862,7 +863,7 @@ HEURISTICS.append({
             diff.functions df
       where f.pseudocode_lines = df.pseudocode_lines
         and df.pseudocode_lines > 5
-        and df.pseudocode is not null 
+        and df.pseudocode is not null
         and f.pseudocode is not null
         %POSTFIX%""",
   "min":0.6,
@@ -904,7 +905,7 @@ HEURISTICS.append({
             diff.functions df
       where f.pseudocode_lines = df.pseudocode_lines
         and df.pseudocode_lines <= 5
-        and df.pseudocode is not null 
+        and df.pseudocode is not null
         and f.pseudocode is not null
         %POSTFIX%""",
   "flags":HEUR_FLAG_SLOW
@@ -1002,7 +1003,7 @@ HEURISTICS.append({
              cast(f.md_index as real) md1, cast(df.md_index as real) md2
         from functions f,
              diff.functions df
-       where f.nodes = df.nodes 
+       where f.nodes = df.nodes
          and f.edges = df.edges
          and f.indegree = df.indegree
          and f.outdegree = df.outdegree
@@ -1212,7 +1213,7 @@ HEURISTICS.append({
             cast(f.md_index as real) md1, cast(df.md_index as real) md2
        from functions f,
             diff.functions df
-      where df.pseudocode is not null 
+      where df.pseudocode is not null
         and f.pseudocode is not null
         and f.pseudocode_lines = df.pseudocode_lines
         and df.pseudocode_lines > 5
@@ -1249,7 +1250,7 @@ def check_categories():
   print("Categories:")
   import pprint
   pprint.pprint(categories)
-  
+
   assert(categories == set(['Best', 'Experimental', 'Partial', 'Unreliable']))
 
 #-------------------------------------------------------------------------------
@@ -1269,13 +1270,13 @@ def check_dupes():
   for key in heurs:
     if heurs[key] > 1:
       dups.append([key, heurs[key]])
-  
+
   print("Dups:")
   import pprint
   pprint.pprint(dups)
-  
+
   assert(dups == [['Similar small pseudo-code', 2], ['Loop count', 2]])
-  
+
 #-------------------------------------------------------------------------------
 def check_heuristic_in_sql():
   heurs = set()
@@ -1309,11 +1310,11 @@ def check_heuristics_ratio():
 
     ratio = heur["ratio"]
     ratios[ratio] += 1
-  
+
   print("Ratios:")
   import pprint
   pprint.pprint(ratios)
-  
+
   assert(ratios == Counter({1: 28, 2: 14, 0: 7}))
 
 #-------------------------------------------------------------------------------
@@ -1336,7 +1337,7 @@ def check_field_names():
         print(("Invalid field '%s' found for heuristic!" % field))
         print(heur)
         assert(field in expected)
-      
+
       if heur["ratio"] == HEUR_TYPE_RATIO_MAX:
         if "min" not in heur:
           print("Heuristic of type HEUR_TYPE_RATIO_MAX without a minimum value set!")

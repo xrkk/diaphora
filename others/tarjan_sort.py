@@ -25,7 +25,6 @@ def strongly_connected_components(graph):
         
     def visit(node):
         if node in low: return
-        if node not in graph: graph[node] = []
 
         num = len(low)
         low[node] = num
@@ -43,7 +42,7 @@ def strongly_connected_components(graph):
             for item in component:
                 low[item] = len(graph)
     
-    for node in dict(graph):
+    for node in graph:
         visit(node)
     
     return result
@@ -108,7 +107,7 @@ if __name__ == '__main__':
     #print robust_topological_sort(d)
 
     d = {0 : [1, 2, 4], 1 : [3, 4], 2 : [0, 3], 3 : [], 4: [1]}
-    print(d)
-    print("scc", strongly_connected_components(d))
-    print("rts", robust_topological_sort(d))
+    print d
+    print "scc", strongly_connected_components(d)
+    print "rts", robust_topological_sort(d)
 
