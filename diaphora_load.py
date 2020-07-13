@@ -20,22 +20,25 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 """
 
+from idaapi import IDA_SDK_VERSION
+from diaphora_ida import load_results
 import diaphora_ida
 reload(diaphora_ida)
-from diaphora_ida import load_results
 
-from idaapi import IDA_SDK_VERSION
 
 if IDA_SDK_VERSION < 690:
-  # In versions prior to IDA 6.9 PySide is used...
-  from PySide import QtGui
+    # In versions prior to IDA 6.9 PySide is used...
+    from PySide import QtGui
 else:
-  # ...while in IDA 6.9, they switched to PyQt5
-  from PyQt5 import QtGui
+    # ...while in IDA 6.9, they switched to PyQt5
+    from PyQt5 import QtGui
 
-#-----------------------------------------------------------------------
+# -----------------------------------------------------------------------
+
+
 def main():
-  load_results()
+    load_results()
+
 
 if __name__ == "__main__":
-  main()
+    main()
